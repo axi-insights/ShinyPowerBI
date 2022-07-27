@@ -1,0 +1,183 @@
+---
+title: "Shiny Power BI"
+---
+
+## Introduction
+
+Shiny apps can be enriched with embedded dashboards. In this document the necessary steps to embed a Power BI dashboard are highlighted.
+
+Using the Power BI Javascript API, you can embed Power BI reports in an R Shiny web application. The reports are fully interactive, can be in edit or readonly mode, and additional functionalities are available (filters, bookmarks, ...).
+
+:::{.callout-tip}
+## Content from RStudio Conf 2022
+
+This is supporting content from the RStudio Conf 2022 talk "Building a shiny client portal for a mortgage management group with embedded Power BI reports" by Thomas Wouters and Joran De Wilde. Find all the conference material on 
+<https://www.rstudio.com/conference/>
+:::
+
+## Recommended Reading
+
+This tutorial combines information found at the following links:
+
+- Sample instructions from the Power BI Embedded Playground <https://playground.powerbi.com>
+- Example embedding in other languages <https://github.com/microsoft/PowerBI-Developer-Samples>
+- The Power BI Javascript tools <https://github.com/microsoft/PowerBI-JavaScript>
+
+## Prerequisites
+
+- Access to Azure with Azure AD (to authenticate) and a resource group (for the embedded capacity)
+- A Power BI account with a Workspace with Reports to embed
+- A Power BI Embedded capacity linked to your workspace
+- A Shiny app to embed your Power BI Reports
+
+
+In terms of a working shiny app with Power BI embedded you'll need the following files.
+
+| File                       | Use                                                                             |
+|----------------------------|:--------------------------------------------------------------------------------|
+| app.R                      | Shiny app code. Can also be ui.R/server.R or sourced from different file.       |
+| www/powerbi.js             | File offered by Microsoft in <https://github.com/microsoft/PowerBI-JavaScript>  |
+| www/powerbi-embed.js       | File you create with the javascript embed function                              |
+
+## Steps
+
+(@)  Create a shiny app
+(@)  Copy the powerbi.js file to the www folder
+(@)  Create the powerbi-embed.js file (www folder too) **sample below**
+(@)  Include the js files in the UI
+(@)  Set up a UI element as the embedcontainer
+(@)  Get an access token from Azure AD
+(@)  Get an embed token with this access token
+(@)  Call the Power BI Javascript API
+
+
+## Code samples
+
+### Shiny - app.R
+
+#### UI
+
+The necessary javascript files need to be included in the UI.
+
+```{r, echo=TRUE, eval = FALSE}
+ui <- shinydashboardPlus::dashboardPage(
+  title = "Dutch Mortgage Portfolio Management | Portal",
+  header = shinydashboardPlus::dashboardHeader(),
+  sidebar = shinydashboardPlus::dashboardSidebar(
+    id = "mainSidebar",
+    collapsed = FALSE,
+    minified = TRUE,
+    sidebarMenuOutput("sidebarMenu")
+  ),
+  body = dashboardBody(
+    shinyjs::useShinyjs(),
+    # Load js scripts
+    tags$script(src= "powerbi.js?version=1"),
+    tags$script(src= "powerbi-embed.js?version=1"),
+    ...
+```    
+
+
+In the body you need to provide the embedcontainer. In this case this component is created server-side, but that is optional.
+```{r, echo=TRUE, eval = FALSE}
+uiOutput("embedContainer")
+```
+
+#### Server
+
+Create the embedcontainer div.
+```{r, echo=TRUE, eval = FALSE}
+output$embedContainer <- renderUI ({
+        HTML(paste0('<div id="', report()$container_id,'" class="embed-responsive embed-responsive-1500by1950" powerbi-settings-nav-content-pane-enabled="true"  powerbi-settings-filter-pane-enabled="true" allowfullscreen="true" scrolling = "no" width="100%" ></div>'))
+        
+      })
+```
+       
+Acquire the embedtoken. This is done in two steps: getting an Azure token using the Azure Auth package and the function get_azure_token(), and then using httr to call the Power BI API to get the token.
+
+```{r, echo=TRUE, eval = FALSE}
+embedToken <- reactive({
+        
+        #### Get access token
+        token <- get_azure_token(resource= "https://analysis.windows.net/powerbi/api",
+                                 tenant= config$tenant_id,
+                                 app= config$application_id,
+                                 password= "mn98KyR+NJIvQHBF3UmmKxbkfLOBznQvawIFJQ+nk48=", #application_secret
+                                 auth_type= "client_credentials", #service principal
+                                 use_cache = FALSE) 
+        
+        accessToken <- token$credentials$access_token
+        
+        ### Get embed token using access token
+        
+        # Create body POST API call
+        request_body_json <- paste0('{"reports": [{"id": "', 
+                                          values$reportID, 
+                                      '"}],"identities": [{"username": "', 
+                                          userEmail, 
+                                      '", "roles": ["', 
+                                          values$powerBIRole,
+                                      '"],"datasets": ["', 
+                                          values$datasetID,
+                                      '"]}]}'
+                                    )
+        
+        # Call POST API
+        result <- POST(paste0("https://api.powerbi.com/v1.0/myorg/groups/", 
+                              values$groupID, 
+                              "/reports/", 
+                              values$reportID, 
+                              "/GenerateToken"
+                              ),
+                       body = request_body_json,
+                       add_headers(.headers = c("Authorization"=paste("Bearer", accessToken),
+                                                "Content-Type"="application/json",
+                                                "Accept"="application/json")))
+        output <- content(result)
+        
+        output$token
+        
+      })
+
+```
+      
+Setting the parameters
+
+```{r, echo=TRUE, eval = FALSE}
+      #PBI
+      embedURL <- reactive({
+        embedURL <- paste0('https://app.powerbi.com/reportEmbed?reportId=', values$reportID,'&groupId=', values$groupID)
+        embedURL
+      })
+      
+      parametersPortfolio <- reactive({
+        
+        list <- list(
+          token = embedToken(),
+          container = config$embedContainerID,
+          url = embedURL(),
+          reportID = config$reportID,
+          report= ns("reportRendered"),#do no change this value: it corresponds with input$reportRendered
+        list
+      })
+```
+
+
+Then call the javascript function to embed the report. This function is defined in powerbi-embed.js .
+```{r, echo=TRUE, eval = FALSE}
+#API call to embed report
+session$sendCustomMessage(type ="callApi", parametersPortfolio())
+```        
+        
+### Javascript - powerbi-embed.js
+
+The full content from the powerbi-embed.js file (from the 'www' folder of the Shiny app) is listed below.
+
+```{javascript, file='powerbi-embed.js'}
+```
+
+### Javascript - powerbi.js
+
+The powerbi.js file is provided by Microsoft, you do not need to change anything in this file. This file contains the javascript code that executes when calling for example 'var report = powerbi.embed(embedContainer, config);'.
+
+File offered by Microsoft in <https://github.com/microsoft/PowerBI-JavaScript> 

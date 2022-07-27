@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Shiny Power BI</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="ShinyPowerBI_files/libs/clipboard/clipboard.min.js"></script>
+<script src="ShinyPowerBI_files/libs/quarto-html/quarto.js"></script>
+<script src="ShinyPowerBI_files/libs/quarto-html/popper.min.js"></script>
+<script src="ShinyPowerBI_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="ShinyPowerBI_files/libs/quarto-html/anchor.min.js"></script>
+<link href="ShinyPowerBI_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="ShinyPowerBI_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="ShinyPowerBI_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="ShinyPowerBI_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="ShinyPowerBI_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Shiny Power BI</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Shiny apps can be enriched with embedded dashboards. In this document the necessary steps to embed a Power BI dashboard are highlighted.</p>
+<p>Using the Power BI Javascript API, you can embed Power BI reports in an R Shiny web application. The reports are fully interactive, can be in edit or readonly mode, and additional functionalities are available (filters, bookmarks, …).</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Content from RStudio Conf 2022
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This is supporting content from the RStudio Conf 2022 talk “Building a shiny client portal for a mortgage management group with embedded Power BI reports” by Thomas Wouters and Joran De Wilde. Find all the conference material on <a href="https://www.rstudio.com/conference/" class="uri">https://www.rstudio.com/conference/</a></p>
+</div>
+</div>
+</section>
+<section id="recommended-reading" class="level2">
+<h2 class="anchored" data-anchor-id="recommended-reading">Recommended Reading</h2>
+<p>This tutorial combines information found at the following links:</p>
+<ul>
+<li>Sample instructions from the Power BI Embedded Playground <a href="https://playground.powerbi.com" class="uri">https://playground.powerbi.com</a></li>
+<li>Example embedding in other languages <a href="https://github.com/microsoft/PowerBI-Developer-Samples" class="uri">https://github.com/microsoft/PowerBI-Developer-Samples</a></li>
+<li>The Power BI Javascript tools <a href="https://github.com/microsoft/PowerBI-JavaScript" class="uri">https://github.com/microsoft/PowerBI-JavaScript</a></li>
+</ul>
+</section>
+<section id="prerequisites" class="level2">
+<h2 class="anchored" data-anchor-id="prerequisites">Prerequisites</h2>
+<ul>
+<li>Access to Azure with Azure AD (to authenticate) and a resource group (for the embedded capacity)</li>
+<li>A Power BI account with a Workspace with Reports to embed</li>
+<li>A Power BI Embedded capacity linked to your workspace</li>
+<li>A Shiny app to embed your Power BI Reports</li>
+</ul>
+<p>In terms of a working shiny app with Power BI embedded you’ll need the following files.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>File</th>
+<th style="text-align: left;">Use</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>app.R</td>
+<td style="text-align: left;">Shiny app code. Can also be ui.R/server.R or sourced from different file.</td>
+</tr>
+<tr class="even">
+<td>www/powerbi.js</td>
+<td style="text-align: left;">File offered by Microsoft in <a href="https://github.com/microsoft/PowerBI-JavaScript" class="uri">https://github.com/microsoft/PowerBI-JavaScript</a></td>
+</tr>
+<tr class="odd">
+<td>www/powerbi-embed.js</td>
+<td style="text-align: left;">File you create with the javascript embed function</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="steps" class="level2">
+<h2 class="anchored" data-anchor-id="steps">Steps</h2>
+<ol class="example" type="1">
+<li>Create a shiny app</li>
+<li>Copy the powerbi.js file to the www folder</li>
+<li>Create the powerbi-embed.js file (www folder too) <strong>sample below</strong></li>
+<li>Include the js files in the UI</li>
+<li>Set up a UI element as the embedcontainer</li>
+<li>Get an access token from Azure AD</li>
+<li>Get an embed token with this access token</li>
+<li>Call the Power BI Javascript API</li>
+</ol>
+</section>
+<section id="code-samples" class="level2">
+<h2 class="anchored" data-anchor-id="code-samples">Code samples</h2>
+<section id="shiny---app.r" class="level3">
+<h3 class="anchored" data-anchor-id="shiny---app.r">Shiny - app.R</h3>
+<section id="ui" class="level4">
+<h4 class="anchored" data-anchor-id="ui">UI</h4>
+<p>The necessary javascript files need to be included in the UI.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> shinydashboardPlus<span class="sc">::</span><span class="fu">dashboardPage</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Dutch Mortgage Portfolio Management | Portal"</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">header =</span> shinydashboardPlus<span class="sc">::</span><span class="fu">dashboardHeader</span>(),</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">sidebar =</span> shinydashboardPlus<span class="sc">::</span><span class="fu">dashboardSidebar</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="st">"mainSidebar"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">collapsed =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">minified =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sidebarMenuOutput</span>(<span class="st">"sidebarMenu"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">body =</span> <span class="fu">dashboardBody</span>(</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    shinyjs<span class="sc">::</span><span class="fu">useShinyjs</span>(),</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Load js scripts</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    tags<span class="sc">$</span><span class="fu">script</span>(<span class="at">src=</span> <span class="st">"powerbi.js?version=1"</span>),</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    tags<span class="sc">$</span><span class="fu">script</span>(<span class="at">src=</span> <span class="st">"powerbi-embed.js?version=1"</span>),</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    ...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In the body you need to provide the embedcontainer. In this case this component is created server-side, but that is optional.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">uiOutput</span>(<span class="st">"embedContainer"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="server" class="level4">
+<h4 class="anchored" data-anchor-id="server">Server</h4>
+<p>Create the embedcontainer div.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>output<span class="sc">$</span>embedContainer <span class="ot">&lt;-</span> <span class="fu">renderUI</span> ({</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">HTML</span>(<span class="fu">paste0</span>(<span class="st">'&lt;div id="'</span>, <span class="fu">report</span>()<span class="sc">$</span>container_id,<span class="st">'" class="embed-responsive embed-responsive-1500by1950" powerbi-settings-nav-content-pane-enabled="true"  powerbi-settings-filter-pane-enabled="true" allowfullscreen="true" scrolling = "no" width="100%" &gt;&lt;/div&gt;'</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>      })</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Acquire the embedtoken. This is done in two steps: getting an Azure token using the Azure Auth package and the function get_azure_token(), and then using httr to call the Power BI API to get the token.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>embedToken <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="do">#### Get access token</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        token <span class="ot">&lt;-</span> <span class="fu">get_azure_token</span>(<span class="at">resource=</span> <span class="st">"https://analysis.windows.net/powerbi/api"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">tenant=</span> config<span class="sc">$</span>tenant_id,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">app=</span> config<span class="sc">$</span>application_id,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">password=</span> <span class="st">"mn98KyR+NJIvQHBF3UmmKxbkfLOBznQvawIFJQ+nk48="</span>, <span class="co">#application_secret</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">auth_type=</span> <span class="st">"client_credentials"</span>, <span class="co">#service principal</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">use_cache =</span> <span class="cn">FALSE</span>) </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        accessToken <span class="ot">&lt;-</span> token<span class="sc">$</span>credentials<span class="sc">$</span>access_token</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="do">### Get embed token using access token</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create body POST API call</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        request_body_json <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">'{"reports": [{"id": "'</span>, </span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>                                          values<span class="sc">$</span>reportID, </span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">'"}],"identities": [{"username": "'</span>, </span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>                                          userEmail, </span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">'", "roles": ["'</span>, </span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>                                          values<span class="sc">$</span>powerBIRole,</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">'"],"datasets": ["'</span>, </span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>                                          values<span class="sc">$</span>datasetID,</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">'"]}]}'</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>                                    )</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Call POST API</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        result <span class="ot">&lt;-</span> <span class="fu">POST</span>(<span class="fu">paste0</span>(<span class="st">"https://api.powerbi.com/v1.0/myorg/groups/"</span>, </span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>                              values<span class="sc">$</span>groupID, </span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>                              <span class="st">"/reports/"</span>, </span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>                              values<span class="sc">$</span>reportID, </span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>                              <span class="st">"/GenerateToken"</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>                              ),</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>                       <span class="at">body =</span> request_body_json,</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">add_headers</span>(<span class="at">.headers =</span> <span class="fu">c</span>(<span class="st">"Authorization"</span><span class="ot">=</span><span class="fu">paste</span>(<span class="st">"Bearer"</span>, accessToken),</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>                                                <span class="st">"Content-Type"</span><span class="ot">=</span><span class="st">"application/json"</span>,</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>                                                <span class="st">"Accept"</span><span class="ot">=</span><span class="st">"application/json"</span>)))</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>        output <span class="ot">&lt;-</span> <span class="fu">content</span>(result)</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>        output<span class="sc">$</span>token</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>      })</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Setting the parameters</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>      <span class="co">#PBI</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>      embedURL <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        embedURL <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">'https://app.powerbi.com/reportEmbed?reportId='</span>, values<span class="sc">$</span>reportID,<span class="st">'&amp;groupId='</span>, values<span class="sc">$</span>groupID)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        embedURL</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      })</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      parametersPortfolio <span class="ot">&lt;-</span> <span class="fu">reactive</span>({</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        list <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">token =</span> <span class="fu">embedToken</span>(),</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">container =</span> config<span class="sc">$</span>embedContainerID,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>          <span class="at">url =</span> <span class="fu">embedURL</span>(),</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>          <span class="at">reportID =</span> config<span class="sc">$</span>reportID,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>          <span class="at">report=</span> <span class="fu">ns</span>(<span class="st">"reportRendered"</span>),<span class="co">#do no change this value: it corresponds with input$reportRendered</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        list</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>      <span class="er">}</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then call the javascript function to embed the report. This function is defined in powerbi-embed.js .</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#API call to embed report</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>session<span class="sc">$</span><span class="fu">sendCustomMessage</span>(<span class="at">type =</span><span class="st">"callApi"</span>, <span class="fu">parametersPortfolio</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="javascript---powerbi-embed.js" class="level3">
+<h3 class="anchored" data-anchor-id="javascript---powerbi-embed.js">Javascript - powerbi-embed.js</h3>
+<p>The full content from the powerbi-embed.js file (from the ‘www’ folder of the Shiny app) is listed below.</p>
+<div class="cell" data-file="powerbi-embed.js">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> loadedResolve<span class="op">,</span> reportLoaded <span class="op">=</span> <span class="kw">new</span> <span class="bu">Promise</span>((res<span class="op">,</span> rej) <span class="kw">=&gt;</span> { loadedResolve <span class="op">=</span> res<span class="op">;</span> })<span class="op">;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> renderedResolve<span class="op">,</span> reportRendered <span class="op">=</span> <span class="kw">new</span> <span class="bu">Promise</span>((res<span class="op">,</span> rej) <span class="kw">=&gt;</span> { renderedResolve <span class="op">=</span> res<span class="op">;</span> })<span class="op">;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>Shiny<span class="op">.</span><span class="fu">addCustomMessageHandler</span>(<span class="st">"callApi"</span><span class="op">,</span> <span class="kw">function</span>(parameters) {</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  Shiny<span class="op">.</span><span class="fu">setInputValue</span>(<span class="st">"logevent"</span><span class="op">,</span> <span class="st">"API called in Javascript"</span><span class="op">,</span> {<span class="dt">priority</span><span class="op">:</span> <span class="st">"event"</span>})<span class="op">;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Read embed application token</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> accessToken <span class="op">=</span> parameters<span class="op">.</span><span class="at">token</span><span class="op">;</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Read embed URL</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> embedUrl <span class="op">=</span> parameters<span class="op">.</span><span class="at">url</span><span class="op">;</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  Shiny<span class="op">.</span><span class="fu">setInputValue</span>(<span class="st">"logevent"</span><span class="op">,</span> embedUrl<span class="op">,</span> {<span class="dt">priority</span><span class="op">:</span> <span class="st">"event"</span>})<span class="op">;</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Read report Id</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> embedReportId <span class="op">=</span> parameters<span class="op">.</span><span class="at">reportID</span><span class="op">;</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Get models. models contains enums that can be used.</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> models <span class="op">=</span> <span class="bu">window</span>[<span class="st">"powerbi-client"</span>]<span class="op">.</span><span class="at">models</span><span class="op">;</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Read embed type from radio</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> tokenType <span class="op">=</span> models<span class="op">.</span><span class="at">TokenType</span><span class="op">.</span><span class="at">Embed</span><span class="op">;</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  <span class="co">// We give All permissions to demonstrate switching between View and Edit mode and saving report.</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> permissions <span class="op">=</span> models<span class="op">.</span><span class="at">Permissions</span><span class="op">.</span><span class="at">All</span><span class="op">;</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Create the embed configuration object for the report</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>  <span class="co">// For more information see https://go.microsoft.com/fwlink/?linkid=2153590</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> config <span class="op">=</span> {</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    <span class="dt">type</span><span class="op">:</span> <span class="st">"report"</span><span class="op">,</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    <span class="dt">tokenType</span><span class="op">:</span> tokenType <span class="op">==</span> <span class="st">"0"</span> <span class="op">?</span> models<span class="op">.</span><span class="at">TokenType</span><span class="op">.</span><span class="at">Aad</span> <span class="op">:</span> models<span class="op">.</span><span class="at">TokenType</span><span class="op">.</span><span class="at">Embed</span><span class="op">,</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    <span class="dt">accessToken</span><span class="op">:</span> accessToken<span class="op">,</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    <span class="dt">embedUrl</span><span class="op">:</span> embedUrl<span class="op">,</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>    <span class="dt">id</span><span class="op">:</span> embedReportId<span class="op">,</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>    <span class="dt">pageView</span><span class="op">:</span> <span class="st">'fitToWidth'</span><span class="op">,</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>    <span class="dt">permissions</span><span class="op">:</span> permissions<span class="op">,</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>    <span class="co">// show action bar (only available in user owns data scenario)</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>    <span class="dt">embedUrl</span><span class="op">:</span> embedUrl <span class="op">+</span> <span class="st">"&amp;actionBarEnabled=true"</span><span class="op">,</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>    <span class="dt">settings</span><span class="op">:</span> {</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>      <span class="dt">background</span><span class="op">:</span> models<span class="op">.</span><span class="at">BackgroundType</span><span class="op">.</span><span class="at">Transparent</span><span class="op">,</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>      <span class="dt">panes</span><span class="op">:</span> {</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>        <span class="dt">filters</span><span class="op">:</span> {</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>          <span class="dt">visible</span><span class="op">:</span> <span class="kw">false</span></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>        }<span class="op">,</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>        <span class="dt">pageNavigation</span><span class="op">:</span> {</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>          <span class="dt">visible</span><span class="op">:</span> <span class="kw">true</span></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Get a reference to the embedded report HTML element</span></span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> embedContainer <span class="op">=</span> <span class="fu">$</span>(parameters<span class="op">.</span><span class="at">container</span>)[<span class="dv">0</span>]<span class="op">;</span></span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Embed the report and display it within the div container.</span></span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>  <span class="kw">var</span> report <span class="op">=</span> powerbi<span class="op">.</span><span class="fu">embed</span>(embedContainer<span class="op">,</span> config)<span class="op">;</span></span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Report.off removes a given event handler if it exists.</span></span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>  report<span class="op">.</span><span class="fu">off</span>(<span class="st">"loaded"</span>)<span class="op">;</span></span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Report.on will add an event handler which prints to Log window.</span></span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a>  report<span class="op">.</span><span class="fu">on</span>(<span class="st">"loaded"</span><span class="op">,</span> <span class="kw">function</span> () {</span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>    Shiny<span class="op">.</span><span class="fu">setInputValue</span>(<span class="st">"logevent"</span><span class="op">,</span> <span class="st">"Loaded"</span><span class="op">,</span> {<span class="dt">priority</span><span class="op">:</span> <span class="st">"event"</span>})<span class="op">;</span></span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a>    Shiny<span class="op">.</span><span class="fu">setInputValue</span>(<span class="st">"reportRendered"</span><span class="op">,</span> parameters<span class="op">.</span><span class="at">report</span><span class="op">+</span><span class="st">".FALSE"</span>)<span class="op">;</span></span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Report.off removes a given event handler if it exists.</span></span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a>  report<span class="op">.</span><span class="fu">off</span>(<span class="st">"rendered"</span>)<span class="op">;</span></span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Report.on will add an event handler which prints to Log window.</span></span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a>  report<span class="op">.</span><span class="fu">on</span>(<span class="st">"rendered"</span><span class="op">,</span> <span class="kw">function</span> () {</span>
+<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a>    Shiny<span class="op">.</span><span class="fu">setInputValue</span>(<span class="st">"logevent"</span><span class="op">,</span> <span class="st">"Rendered"</span><span class="op">,</span> {<span class="dt">priority</span><span class="op">:</span> <span class="st">"event"</span>})<span class="op">;</span></span>
+<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a>    Shiny<span class="op">.</span><span class="fu">setInputValue</span>(<span class="st">"logevent"</span><span class="op">,</span> parameters<span class="op">.</span><span class="at">report</span><span class="op">,</span> {<span class="dt">priority</span><span class="op">:</span> <span class="st">"event"</span>})<span class="op">;</span></span>
+<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a>    Shiny<span class="op">.</span><span class="fu">setInputValue</span>(<span class="st">"logevent"</span><span class="op">,</span> parameters<span class="op">.</span><span class="at">container</span><span class="op">,</span> {<span class="dt">priority</span><span class="op">:</span> <span class="st">"event"</span>})<span class="op">;</span></span>
+<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a>    Shiny<span class="op">.</span><span class="fu">setInputValue</span>(parameters<span class="op">.</span><span class="at">report</span><span class="op">,</span> <span class="st">"TRUE"</span>)<span class="op">;</span></span>
+<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a>  report<span class="op">.</span><span class="fu">on</span>(<span class="st">"error"</span><span class="op">,</span> <span class="kw">function</span> (<span class="bu">event</span>) {</span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a>    Shiny<span class="op">.</span><span class="fu">setInputValue</span>(<span class="st">"logevent"</span><span class="op">,</span> <span class="bu">event</span><span class="op">.</span><span class="at">detail</span><span class="op">,</span> {<span class="dt">priority</span><span class="op">:</span> <span class="st">"event"</span>})<span class="op">;</span></span>
+<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a>    report<span class="op">.</span><span class="fu">off</span>(<span class="st">"error"</span>)<span class="op">;</span></span>
+<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a>    Shiny<span class="op">.</span><span class="fu">setInputValue</span>(parameters<span class="op">.</span><span class="at">report</span><span class="op">,</span> <span class="st">"FALSE"</span>)<span class="op">;</span></span>
+<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a>  report<span class="op">.</span><span class="fu">off</span>(<span class="st">"saved"</span>)<span class="op">;</span></span>
+<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a>  report<span class="op">.</span><span class="fu">on</span>(<span class="st">"saved"</span><span class="op">,</span> <span class="kw">function</span> (<span class="bu">event</span>) {</span>
+<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a>    Shiny<span class="op">.</span><span class="fu">setInputValue</span>(<span class="st">"logevent"</span><span class="op">,</span> <span class="bu">event</span><span class="op">.</span><span class="at">detail</span><span class="op">,</span> {<span class="dt">priority</span><span class="op">:</span> <span class="st">"event"</span>})<span class="op">;</span></span>
+<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="bu">event</span><span class="op">.</span><span class="at">detail</span><span class="op">.</span><span class="at">saveAs</span>) {</span>
+<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a>      Shiny<span class="op">.</span><span class="fu">setInputValue</span>(<span class="st">"logevent"</span><span class="op">,</span> <span class="st">"In order to interact with the new report, create a new token and load the new report"</span><span class="op">,</span> {<span class="dt">priority</span><span class="op">:</span> <span class="st">"event"</span>})<span class="op">;</span></span>
+<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="javascript---powerbi.js" class="level3">
+<h3 class="anchored" data-anchor-id="javascript---powerbi.js">Javascript - powerbi.js</h3>
+<p>The powerbi.js file is provided by Microsoft, you do not need to change anything in this file. This file contains the javascript code that executes when calling for example ‘var report = powerbi.embed(embedContainer, config);’.</p>
+<p>File offered by Microsoft in <a href="https://github.com/microsoft/PowerBI-JavaScript" class="uri">https://github.com/microsoft/PowerBI-JavaScript</a></p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
