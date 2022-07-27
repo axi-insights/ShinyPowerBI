@@ -1,5 +1,6 @@
 ---
-title: "Shiny Power BI"
+website:
+  title: "Shiny Power BI"
 ---
 
 ## Introduction
